@@ -1,0 +1,79 @@
+---
+const publicKey = `-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mDMEZ/h6yBYJKwYBBAHaRw8BAQdAv+O6wr/i0B5KLuE0J2r2PUk25S55AcO1nfLM
+5UWINAm0Ikdob3N0S2VsbHogPGNrZWxsZXlAZ2hvc3RrZWxsei5zaD6ImQQTFgoA
+QQIbAwULCQgHAgIiAgYVCgkICwIEFgIDAQIeBwIXgBYhBEeNPv0dlpT2utCsH3d1
+OHVLorV9BQJp0mLKBQkDuxuCAAoJEHd1OHVLorV9tToBAITDDD4ZFOBnpqJh6UCG
+gFWTvxmy8+kigP2hDRooWt0iAP9ceGIq4HJBUwG7/2vBfr+aqqeyYNXHgi4PnChK
+Jq2GB7g4BGf4esgSCisGAQQBl1UBBQEBB0BdFPKRRK13pbqO6H+A67ZJE5Ty3DB9
+08F1Z8wdys4QZAMBCAeIfgQYFgoAJgIbDBYhBEeNPv0dlpT2utCsH3d1OHVLorV9
+BQJp0mLVBQkDuxuNAAoJEHd1OHVLorV9MAMA/AqbqFw4ahaHhdejSrhhevAjsv8B
+4WtdRJmnSZmwIJYNAP4mxKZnAfbsreFxhnXMdvgLDTycBzCeA+MQp8D3ThcGAg==
+=cIeq
+-----END PGP PUBLIC KEY BLOCK-----`;
+
+const fingerprint = "478D3EFD1D9694F6BAD0AC1F777538754BA2B57D";
+---
+
+<div
+  class="w-full max-w-2xl mx-auto"
+  x-data={`{ copied: false, showKey: false, fingerprint: '${fingerprint}', publicKey: \`${publicKey.replace(/`/g, '\\`')}\` }`}
+>
+  <!-- Fingerprint Display -->
+  <div class="bg-ghost-surface border border-ghost-border rounded-lg p-6 mb-4">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-ghost-cyan font-bold">Fingerprint</h3>
+      <button
+        @click="navigator.clipboard.writeText(fingerprint); copied = true; setTimeout(() => copied = false, 2000)"
+        class="text-sm text-ghost-muted hover:text-ghost-cyan transition-colors flex items-center gap-1"
+      >
+        <span x-show="!copied">Copy</span>
+        <span x-show="copied" class="text-green-400">Copied!</span>
+      </button>
+    </div>
+    <code class="text-ghost-glow text-sm md:text-base break-all">{fingerprint}</code>
+  </div>
+
+  <!-- Key Actions -->
+  <div class="flex flex-wrap gap-3 mb-4">
+    <a
+      href="/ghostkellz_pubkey.asc"
+      download
+      class="flex items-center gap-2 bg-ghost-surface border border-ghost-border hover:border-ghost-cyan px-4 py-2 rounded-lg transition-colors"
+    >
+      <svg class="w-5 h-5 text-ghost-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+      </svg>
+      <span>Download Key</span>
+    </a>
+    <button
+      @click="showKey = !showKey"
+      class="flex items-center gap-2 bg-ghost-surface border border-ghost-border hover:border-ghost-cyan px-4 py-2 rounded-lg transition-colors"
+    >
+      <svg class="w-5 h-5 text-ghost-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+      </svg>
+      <span x-text="showKey ? 'Hide Key' : 'View Key'">View Key</span>
+    </button>
+  </div>
+
+  <!-- Full Public Key -->
+  <div
+    x-show="showKey"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0 transform -translate-y-2"
+    x-transition:enter-end="opacity-100 transform translate-y-0"
+    class="bg-ghost-surface border border-ghost-border rounded-lg p-4 relative"
+  >
+    <button
+      @click="navigator.clipboard.writeText(publicKey); copied = true; setTimeout(() => copied = false, 2000)"
+      class="absolute top-3 right-3 text-sm text-ghost-muted hover:text-ghost-cyan transition-colors"
+    >
+      <span x-show="!copied">Copy Key</span>
+      <span x-show="copied" class="text-green-400">Copied!</span>
+    </button>
+    <pre class="text-xs md:text-sm text-ghost-muted overflow-x-auto whitespace-pre-wrap">{publicKey}</pre>
+  </div>
+</div>

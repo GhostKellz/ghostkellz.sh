@@ -1,0 +1,130 @@
+---
+// GhostFetch - Custom neofetch-style system info display
+---
+
+<div class="w-full max-w-3xl mx-auto" x-data="ghostfetch()">
+  <div class="bg-ghost-surface border border-ghost-border rounded-lg overflow-hidden shadow-2xl">
+    <!-- Terminal Header -->
+    <div class="flex items-center gap-2 px-4 py-3 bg-ghost-border/50 border-b border-ghost-border">
+      <div class="flex gap-2">
+        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+      </div>
+      <span class="text-ghost-muted text-sm ml-2">ghostkellz@archlinux: ~</span>
+    </div>
+
+    <!-- Terminal Content -->
+    <div class="p-4 text-xs md:text-sm leading-relaxed">
+      <!-- Command -->
+      <div class="mb-4">
+        <span class="text-ghost-cyan">$</span>
+        <span class="ml-2" x-show="step >= 1" x-transition>ghostfetch</span>
+        <span x-show="step === 0" class="inline-block w-2 h-4 bg-ghost-cyan ml-2 animate-pulse"></span>
+      </div>
+
+      <!-- Output -->
+      <div x-show="step >= 2" x-transition class="flex flex-col md:flex-row gap-4 md:gap-8">
+        <!-- ASCII Art -->
+        <pre class="text-[#1793D1] text-[10px] md:text-xs leading-tight font-mono shrink-0">
+                   -`
+                  .o+`
+                 `ooo/
+                `+oooo:
+               `+oooooo:
+               -+oooooo+:
+             `/:-:++oooo+:
+            `/++++/+++++++:
+           `/++++++++++++++:
+          `/+++ooooooooooooo/`
+         ./ooosssso++osssssso+`
+        .oossssso-````/ossssss+`
+       -osssssso.      :ssssssso.
+      :osssssss/        osssso+++.
+     /ossssssss/        +ssssooo/-
+   `/ossssso+/:-        -:/+osssso+-
+  `+sso+:-`                 `.-/+oso:
+ `++:.                           `-/+/
+ .`                                 `/</pre>
+
+        <!-- System Info -->
+        <div class="font-mono space-y-1 text-ghost-muted">
+          <div><span class="text-ghost-cyan font-bold">chris@arch</span></div>
+          <div class="text-ghost-border">---------------</div>
+          <div><span class="text-ghost-cyan">OS</span>: Arch Linux x86_64</div>
+          <div><span class="text-ghost-cyan">Host</span>: ROG CROSSHAIR X870E HERO</div>
+          <div><span class="text-ghost-cyan">Kernel</span>: 6.19.10-1-cachyos-lto</div>
+          <div><span class="text-ghost-cyan">Packages</span>: 2439 (pacman), 6 (flatpak)</div>
+          <div><span class="text-ghost-cyan">Shell</span>: zsh 5.9</div>
+          <div><span class="text-ghost-cyan">DE</span>: KDE Plasma 6.3</div>
+          <div><span class="text-ghost-cyan">WM</span>: KWin (Wayland)</div>
+          <div><span class="text-ghost-cyan">Terminal</span>: Ghostty</div>
+          <div><span class="text-ghost-cyan">CPU</span>: AMD Ryzen 9 <span class="text-ghost-glow">9950X3D</span> (32) @ 6.00 GHz</div>
+          <div><span class="text-ghost-cyan">GPU</span>: NVIDIA GeForce <span class="text-ghost-glow">RTX 5090</span></div>
+          <div><span class="text-ghost-cyan">Memory</span>: 64 GB DDR5</div>
+          <div class="pt-2 flex gap-1">
+            <span class="w-3 h-3 bg-[#1d1f21] rounded-sm"></span>
+            <span class="w-3 h-3 bg-[#cc6666] rounded-sm"></span>
+            <span class="w-3 h-3 bg-[#b5bd68] rounded-sm"></span>
+            <span class="w-3 h-3 bg-[#f0c674] rounded-sm"></span>
+            <span class="w-3 h-3 bg-[#81a2be] rounded-sm"></span>
+            <span class="w-3 h-3 bg-[#b294bb] rounded-sm"></span>
+            <span class="w-3 h-3 bg-[#8abeb7] rounded-sm"></span>
+            <span class="w-3 h-3 bg-[#c5c8c6] rounded-sm"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cursor after output -->
+      <div x-show="step >= 2" x-transition class="mt-4">
+        <span class="text-ghost-cyan">$</span>
+        <span class="inline-block w-2 h-4 bg-ghost-cyan ml-2 animate-pulse"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Replay Button -->
+  <div class="text-center mt-4">
+    <button
+      @click="replay()"
+      class="text-ghost-muted hover:text-ghost-cyan transition-colors text-sm"
+    >
+      <span class="mr-1">↻</span> Replay
+    </button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('ghostfetch', () => ({
+      step: 0,
+      hasPlayed: false,
+      init() {
+        // Intersection observer to trigger on scroll into view
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && !this.hasPlayed) {
+              this.hasPlayed = true;
+              this.animate();
+            }
+          });
+        }, { threshold: 0.3 });
+
+        observer.observe(this.$el);
+      },
+      async animate() {
+        this.step = 0;
+        await this.delay(500);
+        this.step = 1;
+        await this.delay(600);
+        this.step = 2;
+      },
+      replay() {
+        this.animate();
+      },
+      delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+    }));
+  });
+</script>

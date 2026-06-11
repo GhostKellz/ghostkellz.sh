@@ -1,0 +1,108 @@
+---
+const fingerprint = "478D3EFD1D9694F6BAD0AC1F777538754BA2B57D";
+const keyId = "777538754BA2B57D";
+---
+
+<div class="w-full max-w-2xl mx-auto" x-data="terminal()">
+  <div class="bg-ghost-surface border border-ghost-border rounded-lg overflow-hidden shadow-2xl">
+    <!-- Terminal Header -->
+    <div class="flex items-center gap-2 px-4 py-3 bg-ghost-border/50 border-b border-ghost-border">
+      <div class="flex gap-2">
+        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+      </div>
+      <span class="text-ghost-muted text-sm ml-2">ghostkellz@archlinux: ~</span>
+    </div>
+
+    <!-- Terminal Content -->
+    <div class="p-4 text-sm leading-relaxed min-h-[280px]">
+      <!-- Command 1 -->
+      <div class="mb-4">
+        <span class="text-ghost-cyan">$</span>
+        <span class="ml-2" x-show="step >= 1" x-transition>gpg --locate-keys ckelley@ghostkellz.sh</span>
+        <span x-show="step === 0" class="inline-block w-2 h-4 bg-ghost-cyan ml-2 animate-pulse"></span>
+      </div>
+
+      <!-- Output 1 -->
+      <div x-show="step >= 2" x-transition class="mb-4 text-ghost-muted">
+        <div>pub   ed25519 2025-04-11 [SC] [expires: <span class="text-green-400">2027-04-05</span>]</div>
+        <div class="text-ghost-glow ml-6">{fingerprint}</div>
+        <div>uid           [<span class="text-green-400">ultimate</span>] GhostKellz &lt;ckelley@ghostkellz.sh&gt;</div>
+        <div>sub   cv25519 2025-04-11 [E] [expires: <span class="text-green-400">2027-04-05</span>]</div>
+      </div>
+
+      <!-- Command 2 -->
+      <div x-show="step >= 3" x-transition class="mb-4">
+        <span class="text-ghost-cyan">$</span>
+        <span class="ml-2">gpg --verify signed-release.sig</span>
+      </div>
+
+      <!-- Output 2 -->
+      <div x-show="step >= 4" x-transition class="text-ghost-muted">
+        <div>gpg: Signature made Sat 05 Apr 2026 10:00:00 AM</div>
+        <div>gpg: using EDDSA key <span class="text-ghost-glow">{keyId}</span></div>
+        <div class="text-green-400 font-bold">gpg: Good signature from "GhostKellz &lt;ckelley@ghostkellz.sh&gt;"</div>
+      </div>
+
+      <!-- Cursor -->
+      <div x-show="step >= 5" x-transition class="mt-4">
+        <span class="text-ghost-cyan">$</span>
+        <span class="inline-block w-2 h-4 bg-ghost-cyan ml-2 animate-pulse"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loop indicator -->
+  <div class="text-center mt-4">
+    <span class="text-ghost-muted text-xs" x-show="looping">
+      <span class="inline-block animate-pulse">●</span> Auto-replay
+    </span>
+    <button
+      @click="toggleLoop()"
+      class="text-ghost-muted hover:text-ghost-cyan transition-colors text-sm ml-2"
+      x-text="looping ? '⏸ Pause' : '▶ Play'"
+    ></button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('terminal', () => ({
+      step: 0,
+      looping: true,
+      loopTimeout: null,
+      init() {
+        this.loop();
+      },
+      async animate() {
+        this.step = 0;
+        await this.delay(500);
+        this.step = 1;
+        await this.delay(800);
+        this.step = 2;
+        await this.delay(1200);
+        this.step = 3;
+        await this.delay(800);
+        this.step = 4;
+        await this.delay(600);
+        this.step = 5;
+      },
+      async loop() {
+        while (this.looping) {
+          await this.animate();
+          await this.delay(4000);
+        }
+      },
+      toggleLoop() {
+        this.looping = !this.looping;
+        if (this.looping) {
+          this.loop();
+        }
+      },
+      delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+    }));
+  });
+</script>
