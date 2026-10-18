@@ -21,7 +21,7 @@ const fingerprint = "478D3EFD1D9694F6BAD0AC1F777538754BA2B57D";
   x-data={`{ copied: false, showKey: false, fingerprint: '${fingerprint}', publicKey: \`${publicKey.replace(/`/g, '\\`')}\` }`}
 >
   <!-- Fingerprint Display -->
-  <div class="bg-ghost-surface border border-ghost-border rounded-lg p-6 mb-4">
+  <div class="glass-panel bg-ghost-surface border border-ghost-border rounded-lg p-6 mb-4">
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-ghost-cyan font-bold">Fingerprint</h3>
       <button
@@ -40,7 +40,7 @@ const fingerprint = "478D3EFD1D9694F6BAD0AC1F777538754BA2B57D";
     <a
       href="/ghostkellz_pubkey.asc"
       download
-      class="flex items-center gap-2 bg-ghost-surface border border-ghost-border hover:border-ghost-cyan px-4 py-2 rounded-lg transition-colors"
+      class="flex items-center gap-2 glass-panel bg-ghost-surface border border-ghost-border hover:border-ghost-cyan px-4 py-2 rounded-lg transition-colors"
     >
       <svg class="w-5 h-5 text-ghost-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
@@ -49,7 +49,7 @@ const fingerprint = "478D3EFD1D9694F6BAD0AC1F777538754BA2B57D";
     </a>
     <button
       @click="showKey = !showKey"
-      class="flex items-center gap-2 bg-ghost-surface border border-ghost-border hover:border-ghost-cyan px-4 py-2 rounded-lg transition-colors"
+      class="flex items-center gap-2 glass-panel bg-ghost-surface border border-ghost-border hover:border-ghost-cyan px-4 py-2 rounded-lg transition-colors"
     >
       <svg class="w-5 h-5 text-ghost-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -65,7 +65,7 @@ const fingerprint = "478D3EFD1D9694F6BAD0AC1F777538754BA2B57D";
     x-transition:enter="transition ease-out duration-200"
     x-transition:enter-start="opacity-0 transform -translate-y-2"
     x-transition:enter-end="opacity-100 transform translate-y-0"
-    class="bg-ghost-surface border border-ghost-border rounded-lg p-4 relative"
+    class="glass-panel bg-ghost-surface border border-ghost-border rounded-lg p-4 relative"
   >
     <button
       @click="navigator.clipboard.writeText(publicKey); copied = true; setTimeout(() => copied = false, 2000)"

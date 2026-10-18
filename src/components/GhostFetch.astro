@@ -3,7 +3,7 @@
 ---
 
 <div class="w-full max-w-3xl mx-auto" x-data="ghostfetch()">
-  <div class="bg-ghost-surface border border-ghost-border rounded-lg overflow-hidden shadow-2xl">
+  <div class="glass-panel bg-ghost-surface border border-ghost-border rounded-lg overflow-hidden shadow-2xl">
     <!-- Terminal Header -->
     <div class="flex items-center gap-2 px-4 py-3 bg-ghost-border/50 border-b border-ghost-border">
       <div class="flex gap-2">
@@ -48,16 +48,18 @@
  .`                                 `/</pre>
 
         <!-- System Info -->
-        <div class="font-mono space-y-1 text-ghost-muted">
+        <div class="font-mono space-y-1 text-ghost-muted min-w-0 break-words">
           <div><span class="text-ghost-cyan font-bold">chris@arch</span></div>
           <div class="text-ghost-border">---------------</div>
           <div><span class="text-ghost-cyan">OS</span>: Arch Linux x86_64</div>
-          <div><span class="text-ghost-cyan">Host</span>: ROG CROSSHAIR X870E HERO</div>
-          <div><span class="text-ghost-cyan">Kernel</span>: 6.19.10-1-cachyos-lto</div>
-          <div><span class="text-ghost-cyan">Packages</span>: 2439 (pacman), 6 (flatpak)</div>
-          <div><span class="text-ghost-cyan">Shell</span>: zsh 5.9</div>
-          <div><span class="text-ghost-cyan">DE</span>: KDE Plasma 6.3</div>
-          <div><span class="text-ghost-cyan">WM</span>: KWin (Wayland)</div>
+          <div><span class="text-ghost-cyan">Host</span>: ROG CROSSHAIR X670E HERO</div>
+          <div><span class="text-ghost-cyan">Kernel</span>: 7.2.11-1-cachyos-lto</div>
+          <div><span class="text-ghost-cyan">Packages</span>: 2624 (pacman), 7 (flatpak)</div>
+          <div><span class="text-ghost-cyan">Shell</span>: zsh 5.9.2</div>
+          <div><span class="text-ghost-cyan">Prompt</span>: Powerlevel10k</div>
+          <div><span class="text-ghost-cyan">WM</span>: Hyprland (Wayland)</div>
+          <div><span class="text-ghost-cyan">Display 1</span>: PG32UCDM3 · 3840×2160 @ 240 Hz · HDR</div>
+          <div><span class="text-ghost-cyan">Display 2</span>: PG32UCDM3 · 3840×2160 @ 240 Hz · HDR</div>
           <div><span class="text-ghost-cyan">Terminal</span>: Ghostty</div>
           <div><span class="text-ghost-cyan">CPU</span>: AMD Ryzen 9 <span class="text-ghost-glow">9950X3D</span> (32) @ 6.00 GHz</div>
           <div><span class="text-ghost-cyan">GPU</span>: NVIDIA GeForce <span class="text-ghost-glow">RTX 5090</span></div>
@@ -99,12 +101,19 @@
     Alpine.data('ghostfetch', () => ({
       step: 0,
       hasPlayed: false,
+      animationId: 0,
       init() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          this.step = 2;
+          this.hasPlayed = true;
+          return;
+        }
         // Intersection observer to trigger on scroll into view
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             if (entry.isIntersecting && !this.hasPlayed) {
               this.hasPlayed = true;
+              observer.disconnect();
               this.animate();
             }
           });
@@ -113,10 +122,17 @@
         observer.observe(this.$el);
       },
       async animate() {
+        const id = ++this.animationId;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          this.step = 2;
+          return;
+        }
         this.step = 0;
         await this.delay(500);
+        if (id !== this.animationId) return;
         this.step = 1;
         await this.delay(600);
+        if (id !== this.animationId) return;
         this.step = 2;
       },
       replay() {

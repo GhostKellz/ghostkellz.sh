@@ -22,10 +22,10 @@ const { title } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
     <title>{title}</title>
   </head>
-  <body class="bg-ghost-bg text-ghost-text font-mono min-h-screen">
+  <body class="bg-ghost-bg text-ghost-text font-sans antialiased min-h-screen">
     <slot />
     <script>
       import Alpine from 'alpinejs';

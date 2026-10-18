@@ -4,7 +4,7 @@ const keyId = "777538754BA2B57D";
 ---
 
 <div class="w-full max-w-2xl mx-auto" x-data="terminal()">
-  <div class="bg-ghost-surface border border-ghost-border rounded-lg overflow-hidden shadow-2xl">
+  <div class="glass-panel bg-ghost-surface border border-ghost-border rounded-lg overflow-hidden shadow-2xl">
     <!-- Terminal Header -->
     <div class="flex items-center gap-2 px-4 py-3 bg-ghost-border/50 border-b border-ghost-border">
       <div class="flex gap-2">
@@ -16,7 +16,7 @@ const keyId = "777538754BA2B57D";
     </div>
 
     <!-- Terminal Content -->
-    <div class="p-4 text-sm leading-relaxed min-h-[280px]">
+    <div class="p-4 text-sm leading-relaxed min-h-[280px] break-words">
       <!-- Command 1 -->
       <div class="mb-4">
         <span class="text-ghost-cyan">$</span>
@@ -27,7 +27,7 @@ const keyId = "777538754BA2B57D";
       <!-- Output 1 -->
       <div x-show="step >= 2" x-transition class="mb-4 text-ghost-muted">
         <div>pub   ed25519 2025-04-11 [SC] [expires: <span class="text-green-400">2027-04-05</span>]</div>
-        <div class="text-ghost-glow ml-6">{fingerprint}</div>
+        <div class="text-ghost-glow ml-6 break-all">{fingerprint}</div>
         <div>uid           [<span class="text-green-400">ultimate</span>] GhostKellz &lt;ckelley@ghostkellz.sh&gt;</div>
         <div>sub   cv25519 2025-04-11 [E] [expires: <span class="text-green-400">2027-04-05</span>]</div>
       </div>
@@ -71,34 +71,41 @@ const keyId = "777538754BA2B57D";
     Alpine.data('terminal', () => ({
       step: 0,
       looping: true,
-      loopTimeout: null,
+      animationId: 0,
       init() {
-        this.loop();
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          this.looping = false;
+          this.step = 5;
+        } else {
+          this.loop();
+        }
       },
-      async animate() {
+      async animate(id) {
         this.step = 0;
-        await this.delay(500);
-        this.step = 1;
-        await this.delay(800);
-        this.step = 2;
-        await this.delay(1200);
-        this.step = 3;
-        await this.delay(800);
-        this.step = 4;
-        await this.delay(600);
-        this.step = 5;
+        for (const [index, wait] of [500, 800, 1200, 800, 600].entries()) {
+          await this.delay(wait);
+          if (id !== this.animationId || !this.looping) return;
+          this.step = index + 1;
+        }
       },
       async loop() {
-        while (this.looping) {
-          await this.animate();
+        const id = ++this.animationId;
+        while (this.looping && id === this.animationId) {
+          await this.animate(id);
+          if (id !== this.animationId || !this.looping) return;
           await this.delay(4000);
         }
       },
       toggleLoop() {
         this.looping = !this.looping;
+        this.animationId++;
         if (this.looping) {
           this.loop();
         }
+      },
+      destroy() {
+        this.animationId++;
+        this.looping = false;
       },
       delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
